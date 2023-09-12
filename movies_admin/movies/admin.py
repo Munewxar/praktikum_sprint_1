@@ -5,7 +5,6 @@ from .models import Genre, Filmwork, GenreFilmwork, Person, PersonFilmwork
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-
     search_fields = ('name',)
 
 
@@ -20,11 +19,9 @@ class PersonFilmworkInline(admin.TabularInline):
 @admin.register(Filmwork)
 class FilmworkAdmin(admin.ModelAdmin):
     inlines = (GenreFilmworkInline, PersonFilmworkInline,)
-
+    
     list_display = ('title', 'type', 'creation_date', 'rating',)
-
     list_filter = ('type', 'creation_date',)
-
     search_fields = ('title', 'description', 'id',)
 
 

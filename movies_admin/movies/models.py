@@ -71,8 +71,8 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
 
     class Meta:
         db_table = "content\".\"film_work"
-        verbose_name = 'Кинопроизведение'
-        verbose_name_plural = 'Кинопроизведения'
+        verbose_name = _('Filmwork')
+        verbose_name_plural = _('Filmworks')
 
 
 class GenreFilmwork(UUIDMixin):
