@@ -11,10 +11,9 @@ from dataclasses import fields
 import sys
 sys.path.append('../../')
 
-
+from db_worker import TABLE_NAME_TO_TYPE
 from models import (FilmWork, Genre, GenreFilmWork, Person, PersonFilmWork,
                     TableType)
-from db_worker import TABLE_NAME_TO_TYPE
 
 
 DSL = {
@@ -28,7 +27,7 @@ DSL = {
 POSTGRES_SCHEMA = 'content'
 
 
-def test_records_amount_equals():
+def test_records_amount_equals() -> None:
     with sqlite3.connect('../../db.sqlite') as sqlite_conn, \
             psycopg2.connect(**DSL, cursor_factory=DictCursor) as pg_conn:
 
@@ -41,7 +40,7 @@ def test_records_amount_equals():
                 'Should have the same records amount'
 
 
-def test_data_equals():
+def test_data_equals() -> None:
     with sqlite3.connect('../../db.sqlite') as sqlite_conn, \
             psycopg2.connect(**DSL, cursor_factory=DictCursor) as pg_conn:
 
@@ -53,23 +52,34 @@ def test_data_equals():
                 postgres_records, key=lambda x: x.id), 'Should have the same data'
 
 
-def _get_records_amount(conn, table, schema=None):
+def _get_records_amount(
+        conn: sqlite3.Connection | _connection,
+        table_name: str,
+        schema: str = None) -> int:
+    """Возвращает количество записей в указанной таблице"""
     cursor = conn.cursor()
 
-    query = _generate_query_for_records_amount(table, schema)
+    query = _generate_query_for_records_amount(table_name, schema)
     cursor.execute(query)
 
     return cursor.fetchone()[0]
 
 
-def _generate_query_for_records_amount(table, schema=None):
+def _generate_query_for_records_amount(
+        table_name: str,
+        schema: str = None) -> str:
+    """Формирует строку запроса для получения количества записей в таблице"""
     if schema:
-        return f'SELECT count(id) FROM {schema}.{table}'
+        return f'SELECT count(id) FROM {schema}.{table_name}'
     else:
-        return f'SELECT count(id) FROM {table}'
+        return f'SELECT count(id) FROM {table_name}'
 
 
-def _fetch_records(conn, table_name, schema=None):
+def _fetch_records(
+        conn: sqlite3.Connection | _connection,
+        table_name: str,
+        schema: str = None) -> list[TableType]:
+    """Возвращает записи из указанной таблицы"""
     if isinstance(conn, sqlite3.Connection):
         conn.row_factory = sqlite3.Row
 
@@ -83,7 +93,8 @@ def _fetch_records(conn, table_name, schema=None):
     return [table_type(**dict(record)) for record in records]
 
 
-def _generate_query_for_records(table_name, schema=None):
+def _generate_query_for_records(table_name: str, schema: str = None) -> str:
+    """Формирует строку запроса для получения записей из таблицы"""
     field_names = _get_field_names(table_name)
     fields_to_select = ', '.join(field_names)
 
@@ -93,6 +104,7 @@ def _generate_query_for_records(table_name, schema=None):
         return f'SELECT {fields_to_select} FROM {table_name}'
 
 
-def _get_field_names(table_name):
+def _get_field_names(table_name: str) -> list[str]:
+    """Возвращает список имен полей в указанной таблице"""
     table_type = TABLE_NAME_TO_TYPE[table_name]
     return [field.name for field in fields(table_type)]
