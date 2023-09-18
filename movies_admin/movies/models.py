@@ -85,6 +85,10 @@ class GenreFilmwork(UUIDMixin):
         db_table = "content\".\"genre_film_work"
         verbose_name = _('Genres')
 
+        constraints = [
+            models.UniqueConstraint('film_work', 'genre', name='genre_film_work_film_work_genre_uniq'),
+        ]
+
 
 class PersonFilmwork(UUIDMixin):
     film_work = models.ForeignKey('Filmwork', on_delete=models.CASCADE)
@@ -96,3 +100,7 @@ class PersonFilmwork(UUIDMixin):
     class Meta:
         db_table = "content\".\"person_film_work"
         verbose_name = _('Persons')
+
+        constraints = [
+            models.UniqueConstraint('film_work', 'person', 'role', name='person_film_work_film_work_person_role_uniq'),
+        ]
