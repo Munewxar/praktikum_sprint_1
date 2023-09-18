@@ -86,7 +86,8 @@ class GenreFilmwork(UUIDMixin):
         verbose_name = _('Genres')
 
         constraints = [
-            models.UniqueConstraint('film_work', 'genre', name='genre_film_work_film_work_genre_uniq'),
+            models.UniqueConstraint('film_work', 'genre', \
+                name='genre_film_work_film_work_genre_uniq'),
         ]
 
 
@@ -102,5 +103,6 @@ class PersonFilmwork(UUIDMixin):
         verbose_name = _('Persons')
 
         constraints = [
-            models.UniqueConstraint('film_work', 'person', 'role', name='person_film_work_film_work_person_role_uniq'),
+            models.UniqueConstraint('film_work', 'person', 'role', \
+                name='person_film_work_film_work_person_role_uniq'),
         ]
