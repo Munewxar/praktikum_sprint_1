@@ -71,3 +71,7 @@ ALTER TABLE "content"."genre_film_work"
 ALTER TABLE "content"."genre"
     ADD CONSTRAINT "genre_name_uniq"
     UNIQUE ("name");
+
+ALTER TABLE "content"."person_film_work"
+    ADD CONSTRAINT "person_film_work_film_work_id_genre_id_role_uniq"
+    UNIQUE ("film_work_id", "person_id", "role");
